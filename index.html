@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Be My Valentine 💘</title>
+
   <style>
     body {
       height: 100vh;
@@ -41,8 +42,41 @@
       border-radius: 10px;
       cursor: pointer;
     }
+
+    /* SHAKE ANIMATION */
+    @keyframes shake {
+      0% { transform: translateX(0); }
+      25% { transform: translateX(-5px); }
+      50% { transform: translateX(5px); }
+      75% { transform: translateX(-5px); }
+      100% { transform: translateX(0); }
+    }
+
+    .shake {
+      animation: shake 0.4s;
+    }
+
+    /* HEARTS */
+    .heart {
+      position: fixed;
+      font-size: 24px;
+      animation: floatUp 1.2s ease-out forwards;
+      pointer-events: none;
+    }
+
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-150px) scale(1.8);
+      }
+    }
   </style>
 </head>
+
 <body>
 
   <h1>Will you be my Valentine? 💝</h1>
@@ -50,19 +84,71 @@
   <button id="yesBtn" onclick="yesClicked()">Yes 💖</button>
   <button id="noBtn" onclick="noClicked()">No 😒</button>
 
+  <!-- SCRIPT GOES HERE (RIGHT BEFORE </body>) -->
   <script>
     let scale = 1;
+    let noClickCount = 0;
+
+    const noTexts = [
+      "Pretty please? 🥺",
+      "My lil donut pls? 🍩",
+      "What if I was whipped cream and pancakes 🥞🤍 would u say no?",
+      "Damn… really? 😐",
+      "What if there was an offer of banana caramel coffee ☕🍌 with Lotus Biscoff cake? 🍰",
+      "What, still no?? 😤",
+      "JUST STFU AND ACCEPT OR ELSE!!! 😡❤️"
+    ];
 
     function noClicked() {
-      scale += 0.3;
       const yesBtn = document.getElementById("yesBtn");
+      const noBtn = document.getElementById("noBtn");
+
+      // Shake NO button
+      noBtn.classList.add("shake");
+      setTimeout(() => noBtn.classList.remove("shake"), 400);
+
+      // Make YES bigger
+      scale += 0.35;
       yesBtn.style.transform = `scale(${scale})`;
+
+      // YES takes over before last message
+      if (noClickCount === noTexts.length - 2) {
+        yesBtn.style.position = "fixed";
+        yesBtn.style.top = "0";
+        yesBtn.style.left = "0";
+        yesBtn.style.width = "100vw";
+        yesBtn.style.height = "100vh";
+        yesBtn.style.borderRadius = "0";
+        yesBtn.style.fontSize = "60px";
+      }
+
+      // Change NO text
+      if (noClickCount < noTexts.length) {
+        noBtn.innerText = noTexts[noClickCount];
+        noClickCount++;
+      }
     }
 
     function yesClicked() {
-      window.location.href = "yay.html";
+      // Heart explosion
+      for (let i = 0; i < 30; i++) {
+        const heart = document.createElement("div");
+        heart.className = "heart";
+        heart.innerText = "❤️";
+        heart.style.left = Math.random() * window.innerWidth + "px";
+        heart.style.top = Math.random() * window.innerHeight + "px";
+        document.body.appendChild(heart);
+
+        setTimeout(() => heart.remove(), 1200);
+      }
+
+      // Delay redirect
+      setTimeout(() => {
+        window.location.href = "yay.html";
+      }, 900);
     }
   </script>
 
 </body>
 </html>
+
